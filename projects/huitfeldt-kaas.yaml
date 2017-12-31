@@ -1,0 +1,35 @@
+title: project-huitfeldt-kaas-title
+type: document
+image: huitfeldt-kaas.jpg
+description: project-huitfeldt-kaas-description
+georeference: true
+template: pdf
+help:
+  introduction: prosjektinfo
+source:
+  document: /static/huitfeldt-kaas.pdf
+  pages: 176
+  dzi: /static/huitfeldt/
+key: _none
+markings: True
+sticky: scientificName, establishmentMeans, currentPage
+order: [ annotation, taxonomy, locality, comment ]
+forms:
+  annotation:
+    - { name: "annotation", type: annotation }
+    - { name: "currentPage", type: hidden }
+  taxonomy:
+    - { name: "scientificName", type: text }
+  locality:
+    - { name: "locality", type: text, path: "/lookup/nve" }
+    - { name: "footprintWKT", type: text, disabled: true }
+    - { name: "locationID", type: text }
+    - { name: "verbatimElevation", type: text }
+    - { name: "decimalLatitude", type: hidden }
+    - { name: "decimalLongitude", type: hidden }
+    - { name: "coordinateUncertaintyInMeters", type: hidden }
+    - { name: "introduced", type: checkbox }
+  comment:
+    - { name: "annotationRemarks", type: textfield }
+submit: transcribe
+

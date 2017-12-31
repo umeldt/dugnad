@@ -1,0 +1,76 @@
+body { font: 16px/1.3 "Helvetica Neue", Helvetica, Arial, sans-serif; background: #999; }
+
+html, body { height: 100%; width: 100%; margin: 0; }
+
+body { display: flex; flex-direction: column; align-items: stretch; align-content: stretch; justify-content: flex-start; }
+
+main { display: flex; justify-content: flex-end; align-items: stretch; }
+
+main { flex: 1 1 auto; }
+
+* { position: relative; }
+header, main { overflow: auto; font-size: smaller; }
+
+#chat-overlay { display: block; position: fixed; height: 100%; width: 100%; z-index: 5; background: #fff; z-index: 100; }
+#chat-overlay iframe { width: 100%; height: 100%; }
+#chat-overlay { display: none; }
+header { background: #fff; border-bottom: 2px solid #000; justify-content: space-between; align-items: center; }
+header nav { flex: 0 0 auto; display: flex; }
+header .actions p { margin-top: 0; }
+
+header h1 { font-size: medium; }
+a { color: #067940; text-decoration: none; }
+a:hover { color: #063940; }
+
+label, input, select, textarea { font: inherit; }
+
+#tr { background: #fff; padding: 0; position: relative; width: 40%; box-shadow: 2px 2px 0.5em #191919; z-index: 10; min-width: 440px; }
+#tr form { overflow: auto; height: 100%; padding: 0 1em; }
+#tr fieldset { border: none; border-top: 3px solid #aaa; border-right: 3px solid #aaa; margin-top: 1em; }
+#tr legend { font-weight: bold; color: #777; }
+#tr label { width: 11em; display: inline-block; font-weight: bold; vertical-align: top; text-align: right; margin-right: 1em; }
+#tr button { margin-left: 12.3em; }
+#tr input[readonly] { background: #eee; border: 1px solid #100%; }
+#tr input, #tr textarea { width: 200px; max-width: 80%; }
+#tr textarea { height: 5em; }
+#tr input[type=submit] { float: right; width: auto; margin-right: 1em; }
+#tr td { text-align: left; width: 16em; position: relative; }
+#tr th { text-align: right; padding-right: 0.5em; color: #444; }
+#tr input[type=checkbox] { width: 1em; }
+
+#dz { text-align: center; overflow: hidden; position: relative; }
+#dz { width: 100%; }
+#dz img { max-width: 100%; max-height: 100%; }
+#dzi { height: 100%; width: 100%; }
+
+#actions a { font-weight: bold; text-transform: uppercase; }
+#map-overlay { height: 100%; width: 100%; top: 0; z-index: 5; visibility: hidden; position: absolute; }
+#map-overlay #map { height: 100%; width: 100%; position: absolute; bottom: 0; }
+#simple-map { height: 75vh; width: 100%; border: 1px solid #000; border-radius: 1em; }
+#error { padding: 2em; background: #fff; margin: 0 auto; height: 5em; margin-top: 8em; }
+.modes { position: absolute; bottom: 0; left: 0; right: 0; margin: 0 auto; background: rgba(255,255,255,0.8); z-index: 10; padding: 1em; font-weight: bold; width: 12em; text-align: center; }
+#help { clear: both; padding-top: 0.5em; }
+.help img { width: 16px; vertical-align: middle; margin-left: 4px; }
+#helptext { color: #700; }
+#help h3 { font-size: medium; }
+.help:hover { cursor: pointer; cursor: -moz-pointer; cursor: -webkit-pointer; }
+
+
+header { background: #333; color: #aaa; border-bottom: 2px solid #000; padding:
+0 1em; }
+header h1 { font-size: medium; color: #ccc; font-weight: normal; margin: 0.75em
+0; }
+header form { margin: 0 1em; }
+
+header nav { display: flex; max-width: 100%; margin: 0 auto; justify-content: space-between; box-sizing: border-box; }
+header .register-login { font-size: medium; font-weight: normal; margin: 0.75em
+0; }
+
+header a { color: #7FDBFF;}
+header a:hover { color: #fff; }
+header a:visited { color: #eee; }
+header .crumbs p { margin: 0 0 1em 0; font-size: small; }
+
+.crumbs p a { font-weight: 200; }
+.crumbs p a:hover { color: #0fabff; }
+.crumbs p a.now { color: #fff !important; }

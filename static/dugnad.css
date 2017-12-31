@@ -1,0 +1,101 @@
+body { font: 24px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif; margin: 0; }
+header, main, section, nav, aside, article { display: block; }
+
+header { background: #333; color: #fff; border-bottom: 2px solid #000; padding: 0 1em; }
+header h1 { font-size: medium; color: #ccc; font-weight: normal; margin: 0.75em 0; }
+
+header nav { display: flex; width: 970px; max-width: 100%; margin: 0 auto; justify-content: space-between; box-sizing: border-box; }
+header .register-login { font-size: medium; font-weight: normal; margin: 0.75em 0; }
+header a { color: #7FDBFF;}
+header a:hover { color: #fff; }
+header a:visited { color: #eee; }
+header .crumbs p { margin: 0 0 1em 0; font-size: small; }
+
+.project-logo { float: right; }
+
+main {}
+section {}
+
+section.info { background: #f6f6f6; padding: 1em; border-bottom: 1px solid #333; box-shadow: 0px 5px 5px #999; }
+section.info h1 { font-size: 240%; font-weight: normal; margin: 0; }
+section.info > section { width: 970px; max-width: 100%; margin: 0 auto; }
+section.info aside { float: right; min-width: 200px; max-width: 20%; font-size: small; border: 1px solid #000; padding: 1em; border-radius: 2em 1em 2em 1em; background: #fff; margin: 1em; }
+section.info aside h2 { font-weight: bold; margin: 0; font-size: medium; box-sizing: border-box; text-align: center; }
+section.info aside dt { font-weight: bold; }
+section.info aside dd { margin: 0 0 0 1em; }
+
+p { font-weight: 200; }
+a { text-decoration: none; color: #0074D9; }
+a:visited { color: #001f3f; }
+
+section.projects { display: flex; margin: 2em auto; width: 970px; max-width: 100%; flex-wrap: wrap; justify-content: space-around; }
+section.projects article { text-align: center; max-width: 20%; min-width: 260px; margin: 1em 1em 0 1em; }
+section.projects article img { max-width: 100%; border-radius: 50%; border: dotted 2px #444; object-fit: cover; }
+section.projects article h3 { font-size: large; margin-top: 0; margin-bottom: 0.5em; }
+section.projects article a:hover img { border: solid 2px #000; }
+section.projects article a:hover { text-decoration: underline; }
+
+section.subprojects article img { border-radius: 0; border: none; }
+section.subprojects article a:hover img { border: none; }
+
+article .difficulty, article .progress { font-size: medium; margin-top: 0; }
+
+footer { width: 970px; max-width: 100%; margin: 2em auto; }
+
+section.video { margin: 2em auto; text-align: center; }
+section.video video { max-width: 100%; }
+
+section.stats { display: flex; margin: 2em auto 0 auto; width: 970px; max-width: 100%; flex-wrap: wrap; justify-content: space-around; }
+section.stats { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }
+section.stats article { flex: 1 1 auto; min-width: 300px; }
+section.stats p { text-align: center; font-size: small; }
+
+section.stats table { text-align: right; }
+
+section.help { width: 970px; max-width: 100%; padding: 0 1em; margin: 0 auto; }
+
+footer { text-align: center; }
+
+section.projects article a.disabled { color: #000; }
+section.projects article a.disabled:hover { text-decoration: none; }
+section.projects article a.disabled:hover img { border: 2px dotted #000; }
+
+main > nav { width: 970px; max-width: 100%; }
+main > nav { margin: 1em auto; text-align: center; }
+
+section.stats h1 { font-size: x-large; }
+section.stats .list { text-align: left; width: 100%; }
+section.stats .list tr { }
+
+a.btn { display: inline-block; padding: 10px 16px; font-size: 18px; border-radius: 6px; color: #fff; background: #337ab7; border: 1px solid #2e6da4; vertical-align: middle; text-align: center; font-weight: normal; }
+a.btn:hover { background: #286090; border-color: #204d74; }
+
+main > nav,
+section.info > section,
+section.help,
+section.stats,
+header nav,
+section.projects,
+footer { width: 1170px; }
+
+@media print {
+  body { background: #fff; color: #000; height: auto; }
+  .info { margin: 0; padding: 0; width: 100%; }
+  .info h1 { font-size: x-large; font-weight: bold; }
+  .info dd { font-size: 14px; }
+  .info aside { display: none; }
+  .info h2 { page-break-before: always; }
+
+  footer { position: fixed; bottom: 0; width: 100%; text-align: center; color: #444; }
+}
+
+#map { width: 100%; height: 800px; border: 2px solid #000; }
+
+form.user { background: #fff; border: 1px solid #000; padding: 0 1em; margin: 1em 0; }
+form.user h2 { font-size: 110%; }
+form.user .info { float: right; max-width: 50%; }
+form.user label { text-align: right; display: inline-block; width: 6em; }
+form.user input { font: inherit; }
+.error { padding: 8px; background: #eee; border: 1px solid #ddd; color: #f33; text-align: center; font-weight: bold; margin: 1em auto; width: 24em; }
+.ok { padding: 8px; background: #eee; border: 1px solid #ddd; color: #1a1; text-align: center; font-weight: bold; margin: 1em auto; width: 24em; }
+

@@ -1,0 +1,6 @@
+*.db
+*.pyc
+static/huitfeldt
+messages.mo
+auth/users.json
+auth/register.json

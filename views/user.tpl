@@ -4,7 +4,10 @@
   ·
   <a href="{{path('/logout')}}">{{_('logout')}}</a>
 % else:
-  % for key, service in config.get('oauth', {}).iteritems():
-  <a href='{{service['url'] % service['id']}}'>{{_(service['text'])}}</a>
+  % if 'oauth' in config:
+    {{_('login-using')}}<br>
+    % for key, service in config.get('oauth', {}).iteritems():
+    <a href='{{service['url'] % service['id']}}'>{{service['name']}}</a>
+    % end
   % end
 % end

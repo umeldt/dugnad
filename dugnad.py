@@ -349,34 +349,36 @@ def logout():
 @get("/oauth/<key>")
 def oauthcallback(key):
     service = config['oauth'][key]
-    reply = requests.post(service['tokenurl'], data={
+    raw = requests.post(service['tokenurl'], data={
         'client_id': service['id'],
         'client_secret': service['secret'],
         'code': request.query['code']
     }, headers={
         'Accept': 'application/json'
-    }).json()
+    })
+    reply = raw.json()
     request.session['oauth'] = reply['access_token']
-    if 'authenticate' in service:
-        request.session['oauth_service'] = key
-        request.session['oauth_id'] = reply[service['authenticate']['id']]
-        request.session['oauth_user'] = reply[service['authenticate']['handle']]
+    if 'url' in service['authenticate']:
         request.session.save()
-        redirect(path("/"))
+        return redirect(path("/oauthenticate/" + key))
+    request.session['oauth_service'] = key
+    request.session['oauth_id'] = reply[service['authenticate']['id']]
+    request.session['oauth_user'] = reply[service['authenticate']['handle']]
     request.session.save()
-    redirect(path("/oauthenticate/" + key))
+    redirect(path("/"))
 
 @get("/oauthenticate/<key>")
 def oauthorize(key):
     service = config['oauth'][key]
-    result = requests.get(service['authenticate']["url"], params={
+    raw = requests.get(service['authenticate']["url"], params={
         'access_token': request.session['oauth'],
     }, headers={
         'Accept': 'application/json'
-    }).json()
+    })
+    result = raw.json()
     request.session['oauth_service'] = key
-    request.session['oauth_id'] = result['id']
-    request.session['oauth_user'] = result['login']
+    request.session['oauth_id'] = result[service['authenticate']['id']]
+    request.session['oauth_user'] = result[service['authenticate']['login']]
     request.session.save()
     redirect(path("/"))
 

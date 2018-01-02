@@ -12,7 +12,7 @@ source:
   dzi: /static/huitfeldt/
 key: _none
 markings: True
-sticky: scientificName, establishmentMeans, currentPage
+sticky: scientificName, currentPage
 order: [ annotation, taxonomy, locality, comment ]
 forms:
   annotation:

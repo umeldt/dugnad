@@ -10,9 +10,9 @@ import yaml
 import urllib
 import logging
 import datetime
+import requests
 
 from beaker.middleware import SessionMiddleware
-from cork import Cork
 
 import bottle
 import bottle.ext.sqlite
@@ -35,11 +35,6 @@ app = I18NPlugin(app, config['languages'], config['languages'][0][0], "lang")
 app = SessionMiddleware(app, SESSION)
 
 logging.basicConfig(level=logging.INFO)
-
-cork = Cork('auth', email_sender=config['email'])
-authorize = cork.make_auth_decorator(fail_redirect="/login", role="dugnadsfolk")
-
-from dugnad.util import dzi
 
 class Form:
     class Button:
@@ -235,12 +230,17 @@ SimpleTemplate.defaults["url"] = url
 
 @hook('before_request')
 def before_request():
+    request.session = bottle.request.environ.get('beaker.session')
     request.crumbs = []
-    if cork.user_is_anonymous:
-        request.user = None
+    if request.session.get('oauth_service'):
+        request.user = request.session['oauth_user']
+        request.login = "%s (%s)" % (request.session['oauth_user'],
+                                     request.session['oauth_service'])
+        request.uid = "%s:%s" % (request.session['oauth_service'],
+                                 request.session['oauth_id'])
     else:
-        request.user = cork.current_user
-        request.uid = cork.current_user.username
+        request.user = None
+        request.uid = "anonymous"
 
 @get('/')
 @view('index')
@@ -298,14 +298,13 @@ def transcribe(slug, db):
     project = Project.find(slug)
     base = request.headers['referer'].split("?")[0]
     if 'skip' in request.forms: redirect(base)
-    project.contribute(db, request.user.username, request.forms)
+    project.contribute(db, request.uid, request.forms)
     redirect(base + query(request.forms, project.sticky))
 
 @get('/project/<slug>/userlog')
 def userlog(slug, db):
-    cork.require(role='dugnadsfolk', fail_redirect='/')
     project = Project.find(slug)
-    posts = project.userlog(db, request.user.username)
+    posts = project.userlog(db, request.uid)
     if request.query.view == "map":
         return template("map", { 'project': project, 'posts': posts })
     elif request.query.view == "browse":
@@ -314,7 +313,6 @@ def userlog(slug, db):
 
 @get('/project/<slug>/<uuid>')
 def review(slug, uuid, db):
-    cork.require(role='dugnadsfolk', fail_redirect='/')
     project = Project.find(slug)
     post = Post.find(db, uuid)
     forms = [Form(form, project.forms[form]) for form in project.order]
@@ -323,9 +321,8 @@ def review(slug, uuid, db):
 
 @post('/project/<slug>/<uuid>')
 def revise(slug, uuid, db):
-    cork.require(role='dugnadsfolk', fail_redirect='/')
     post = Post.find(db, uuid)
-    post.update(db, request.user.username, request.forms)
+    post.update(db, request.uid, request.forms)
     redirect(path('/project/%s/userlog' % slug))
 
 @get('/lookup/<key>')
@@ -343,48 +340,40 @@ def lookup(key, db):
 def static(path):
     return static_file(path, root='static')
 
-# authentication
-@get('/login')
-@view('login')
-def login():
-    fail = 'fail' in request.query
-    validated = 'validated' in request.query
-    return {'fail': fail, 'validated': validated}
-
-@post('/login')
-def login():
-    login = request.POST.get("name")
-    passw = request.POST.get("password")
-    cork.login(login, passw, success_redirect="/", fail_redirect="/login?fail")
-
 @route('/logout')
 def logout():
-    cork.logout(success_redirect='/login')
+    request.session.delete()
+    redirect(path("/"))
 
-@post('/register')
-def register():
-    login = request.POST.get("name")
-    passw = request.POST.get("password")
-    email = request.POST.get("email")
-    cork.register(login, passw, email, role='dugnadsfolk')
-    return template("check-mail")
+# handle oauth logins
+@get("/oauth/<key>")
+def oauthcallback(key):
+    service = config['oauth'][key]
+    result = requests.post(service['tokenurl'], data={
+        'client_id': service['id'],
+        'client_secret': service['secret'],
+        'code': request.query['code']
+    }, headers={
+        'Accept': 'application/json'
+    })
+    request.session['oauth'] = result.json()['access_token']
+    request.session.save()
+    redirect(path("/oauthenticate/" + key))
 
-@route('/validate/<code>', name='validate')
-def validate(code):
-    cork.validate_registration(code)
-    redirect(path("/login?validated"))
+@get("/oauthenticate/<key>")
+def oauthorize(key):
+    service = config['oauth'][key]
+    result = requests.get(service['authurl'], params={
+        'access_token': request.session['oauth'],
+    }, headers={
+        'Accept': 'application/json'
+    }).json()
+    request.session['oauth_service'] = key
+    request.session['oauth_id'] = result['id']
+    request.session['oauth_user'] = result['login']
+    request.session.save()
+    redirect(path("/"))
 
-@post('/reset')
-def resetpassword():
-    login = request.POST.get("name")
-    email = request.POST.get("email")
-    cork.send_password_reset_email(username=login, email_addr=email)
-    return template("reset-mail")
-
-@get('/password/:reset_code')
-@view('password')
-def setpassword(code):
-    return dict(code=code)
-
-run(app, host='localhost', port=8080, debug=True)
+if __name__ == "__main__":
+    run(app, server="gunicorn", host="0.0.0.0", port=8080)
 

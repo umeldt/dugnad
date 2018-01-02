@@ -1,9 +1,0 @@
-title: dugnad
-subheading: annotering & transkribering
-static: '/static'
-email: ""
-lookup:
-  nve: { table: waterbody, key: name }
-links: []
-languages:
-  - ['nb_NO', 'Norsk']

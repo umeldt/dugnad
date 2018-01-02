@@ -4,7 +4,7 @@
 % rebase('base.tpl', title='dugnad')
 
 <section class=stats>
-  <h1>{{project.title}}</h1>
+  <h1>{{_(project.title)}}</h1>
   <p>
     <a href='?view=map'>{{_('map')}}</a> ·
     <a href='?view=browse'>{{_('browse')}}</a>

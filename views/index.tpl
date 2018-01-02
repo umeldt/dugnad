@@ -17,7 +17,6 @@
 -->
   
     <p>{{_('introduction')}}
-    <p>{{!_('introduction-user')}}
   </section>
 </section>
 

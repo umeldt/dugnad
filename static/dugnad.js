@@ -376,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
             div.className = 'autocomplete-suggestion';
             div.setAttribute('data-val', item.name);
             div.setAttribute('data-all', data);
-            div.innerHTML = item.name.replace(re, "<b>$1</b>");
+            div.innerHTML = item.name.replace(re, "<b>$1</b>") + " (" + item.tags + ")";
             return div.outerHTML;
           },
           onSelect: function(e, term, item) {

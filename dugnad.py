@@ -349,21 +349,27 @@ def logout():
 @get("/oauth/<key>")
 def oauthcallback(key):
     service = config['oauth'][key]
-    result = requests.post(service['tokenurl'], data={
+    reply = requests.post(service['tokenurl'], data={
         'client_id': service['id'],
         'client_secret': service['secret'],
         'code': request.query['code']
     }, headers={
         'Accept': 'application/json'
-    })
-    request.session['oauth'] = result.json()['access_token']
+    }).json()
+    request.session['oauth'] = reply['access_token']
+    if 'authenticate' in service:
+        request.session['oauth_service'] = key
+        request.session['oauth_id'] = reply[service['authenticate']['id']]
+        request.session['oauth_user'] = reply[service['authenticate']['handle']]
+        request.session.save()
+        redirect(path("/"))
     request.session.save()
     redirect(path("/oauthenticate/" + key))
 
 @get("/oauthenticate/<key>")
 def oauthorize(key):
     service = config['oauth'][key]
-    result = requests.get(service['authurl'], params={
+    result = requests.get(service['authenticate']["url"], params={
         'access_token': request.session['oauth'],
     }, headers={
         'Accept': 'application/json'

@@ -100,5 +100,23 @@ T.getmarkings(p, ancient.fabricCanvas());
 % else:
 viewer.raiseEvent("page", { page: viewer.currentPage() });
 % end
+
+var remove = document.getElementById('removefabric');
+console.log(remove);
+if(remove) {
+  remove.onclick = function(e) {
+    var canvas = overlay.fabricCanvas();
+    var obj = canvas.getActiveObject();
+    var grp = canvas.getActiveGroup();
+    if (obj) canvas.remove(obj);
+    else if (grp) {
+      var objs = activeGroup.getObjects();
+      canvas.discardActiveGroup();
+      objs.forEach(function(o) { canvas.remove(o); });
+    }
+    serialize();
+    return false;
+  }
+}
 </script>
 

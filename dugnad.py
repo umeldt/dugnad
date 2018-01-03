@@ -105,7 +105,8 @@ class Form:
                                 'disabled': True
                                }),
                     self.Input({'type': 'hidden', 'name': blueprint['name']}),
-                    self.Button({'name': 'mark-page'})
+                    self.Button({'name': 'mark-page'}),
+                    self.Button({'name': 'removefabric'})
                    ]
         else:
             return [self.Input(blueprint)]

@@ -1,11 +1,11 @@
 <p class=register-login>
 % if user:
-  {{_('signed-in-as')}} {{request.login}}
+  {{_('signed-in-as')}} <b>{{request.login}}</b>
   ·
   <a href="{{path('/logout')}}">{{_('logout')}}</a>
 % else:
   % if 'oauth' in config:
-    {{_('login-using')}}<br>
+    <b>{{_('login-using')}}</b><br>
     % for key, service in config.get('oauth', {}).iteritems():
     <a href='{{service['url'] % service['id']}}'>{{service['name']}}</a>
     % end

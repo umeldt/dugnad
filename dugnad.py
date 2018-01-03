@@ -40,6 +40,7 @@ class Form:
     class Button:
         def __init__(self, blueprint):
             self.name = blueprint['name']
+            self.type = "button"
 
         def tohtml(self):
             s = "<button id='%s' name='%s'>%s</button>" % (
@@ -52,6 +53,7 @@ class Form:
             self.name = blueprint['name']
             self.size = blueprint.get('size', "24")
             self.readonly = blueprint.get('disabled')
+            self.checked = False
             self.url = blueprint.get('url')
             self.path = blueprint.get('path')
             self.value = ""
@@ -63,6 +65,8 @@ class Form:
             s += "<input type=%s name='%s'" % (self.type, self.name)
             s += " size='%s'" % self.size
             s += " id='%s'" % self.name
+            if self.checked:
+                s += " checked" 
             if self.value:
                 s += " value='%s'" % self.value
             if self.url:
@@ -77,6 +81,7 @@ class Form:
     class Textfield:
         def __init__(self, blueprint):
             self.name = blueprint['name']
+            self.type = "textfield"
             self.readonly = blueprint.get('disabled')
             self.value = ""
 
@@ -119,7 +124,10 @@ class Form:
     def validate(self, request):
         for element in self.inputs:
             if element.name in request:
-                element.value = request[element.name]
+                if element.type == "checkbox":
+                    if request[element.name]: element.checked = True
+                else:
+                    element.value = request[element.name]
 
 class Changelog:
     fmt = r"(?P<date>.+):\s*(?P<text>.*)\s*\((?P<project>.*)\)"
@@ -188,7 +196,7 @@ class Project:
     def contribute(self, db, uid, data):
         finished = not data.get('later')
         postid = str(uuid.uuid4())
-        if 'annotation' in data:
+        if 'annotation' in data and data['annotation']:
             pages = json.loads(data['annotation'])
             for page, marks in pages.iteritems():
                 self.addmarkings(db, postid, uid, page, marks)

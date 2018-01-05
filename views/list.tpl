@@ -14,7 +14,6 @@
   <table id=userlog class=list>
     <thead>
     <tr>
-      <th>{{_('id')}}</th>
       <th>{{_('date')}}</th>
       <th>{{_('last-update')}}</th>
       % for term in project.sort:
@@ -25,7 +24,6 @@
     </thead>
     % for post in posts:
     <tr>
-      <td>{{post.id}}</td>
       <td>{{post.date}}</td>
       <td>{{post.updated}}</td>
       % for term in project.sort:

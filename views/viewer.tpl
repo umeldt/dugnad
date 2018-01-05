@@ -29,6 +29,8 @@ var viewer = OpenSeadragon({
 var ancient = this.viewer.fabricjsOverlay({ scale: 1000 });
 
 % if get('browse'):
+
+T.uid = "{{browse}}";
 var overlay = ancient;
 % else:
 var overlay = this.viewer.fabricjsOverlay({ scale: 1000 });
@@ -84,7 +86,6 @@ viewer.addHandler("page", function(e) {
 
 var pages = {};
 var serialize = function(e) {
-  console.log("lagrer");
   var json = overlay.fabricCanvas().toJSON()
   var annotation = document.getElementById("annotation");
   var page = viewer.currentPage();
@@ -99,6 +100,7 @@ var serialize = function(e) {
   }
 }
 % if not get('id'):
+console.log("OK");
 var p = (currentpage && currentpage.value) ? currentpage.value : 0;
 T.getmarkings(p, ancient.fabricCanvas());
 % else:
@@ -124,19 +126,21 @@ if(remove) {
 }
 
 var index = document.getElementById('document-index');
-index.onchange = function(e) {
-  viewer.goToPage(e.target.value - 1);
-  if(currentpage) currentpage.value = e.target.value;
-
-  for(var i = 0; i < e.target.length; i++) {
-    if(e.target[i].selected) {
-      var autofill = e.target[i].getAttribute('data-auto');
-      if(autofill) {
-        var terms = JSON.parse(autofill);
-        for (var term in terms) {
-          var input = document.getElementById(term);
-          if(input && !input.value) {
-            input.value = terms[term];
+if(index) {
+  index.onchange = function(e) {
+    viewer.goToPage(e.target.value - 1);
+    if(currentpage) currentpage.value = e.target.value;
+  
+    for(var i = 0; i < e.target.length; i++) {
+      if(e.target[i].selected) {
+        var autofill = e.target[i].getAttribute('data-auto');
+        if(autofill) {
+          var terms = JSON.parse(autofill);
+          for (var term in terms) {
+            var input = document.getElementById(term);
+            if(input && !input.value) {
+              input.value = terms[term];
+            }
           }
         }
       }

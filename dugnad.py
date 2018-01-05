@@ -355,6 +355,8 @@ def userlog(slug, db):
 def review(slug, uuid, db):
     project = Project.find(slug)
     post = Post.find(db, uuid)
+    if post.user != request.uid:
+        redirect(path('/project/%s/userlog' % slug))
     forms = [Form(form, project.forms[form]) for form in project.order]
     [form.validate(post.annotation) for form in forms]
     return template("document",{'id': uuid, 'project': project, 'forms': forms})
@@ -362,7 +364,8 @@ def review(slug, uuid, db):
 @post('/project/<slug>/<uuid>')
 def revise(slug, uuid, db):
     post = Post.find(db, uuid)
-    post.update(db, request.uid, request.forms)
+    if post.user == request.uid:
+        post.update(db, request.uid, request.forms)
     redirect(path('/project/%s/userlog' % slug))
 
 @get('/lookup/<key>')
@@ -418,7 +421,7 @@ def oauthorize(key):
     result = raw.json()
     request.session['oauth_service'] = key
     request.session['oauth_id'] = result[service['authenticate']['id']]
-    request.session['oauth_user'] = result[service['authenticate']['login']]
+    request.session['oauth_user'] = result[service['authenticate']['handle']]
     request.session.save()
     redirect(path("/"))
 

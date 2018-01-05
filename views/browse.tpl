@@ -14,7 +14,7 @@
   </div>
 </section>
 
-% include("viewer.tpl", project=project, browse=True)
+% include("viewer.tpl", project=project, browse=request.uid)
 
 <style>
 html, body { height: 100%; width: 100%; margin: 0; position: relative; }

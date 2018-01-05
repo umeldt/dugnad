@@ -21,13 +21,17 @@ T.getmarkings = function(page, cv) {
       var objects = JSON.parse(data[i].markings).objects;
       for(var j = 0; j < objects.length; j++) {
         var klass = fabric.util.getKlass(objects[j].type);
-        objects[j].stroke = "rgba(255, 255, 0, 0.3)";
+	if(T.uid && data[i].user == T.uid) {
+          objects[j].stroke = "rgba(0, 255, 0, 0.3)";
+	} else {
+          objects[j].stroke = "rgba(255, 255, 0, 0.3)";
+	}
         (function(info) {
           if(klass.async) {
             klass.fromObject(objects[j], function(img) {
-              cv.on("mouse:down", function(options) {
-                document.location = "/project/"+info.project+"/"+info.post;
-              });
+	      if(T.uid && data[i].user == T.uid) {
+	        img.url = "/project/" + info.project + "/" + info.post;
+	      }
               cv.add(img);
             });
           } else {
@@ -37,7 +41,14 @@ T.getmarkings = function(page, cv) {
         })(data[i]);
       }
     }
+    cv.on("mouse:down", function(e) {
+      if(e.target && e.target.url) {
+        document.location = e.target.url;
+      }
+      return false;
+    });
   });
+
 }
 
 T.georeference = function(layer) {

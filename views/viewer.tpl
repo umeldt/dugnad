@@ -2,7 +2,11 @@
 var selectpage = document.getElementById('select-page');
 var currentpage = document.getElementById('currentPage');
 
-selectpage.value = (currentpage && currentpage.value) ? currentpage.value : 1;
+if(currentpage && currentpage.value) {
+  selectpage.value = Number(currentpage.value) + 1;
+} else {
+  selectpage.value = 1;
+}
 
 var viewer = OpenSeadragon({
   id: "dzi",
@@ -118,5 +122,27 @@ if(remove) {
     return false;
   }
 }
+
+var index = document.getElementById('document-index');
+index.onchange = function(e) {
+  viewer.goToPage(e.target.value - 1);
+  if(currentpage) currentpage.value = e.target.value;
+
+  for(var i = 0; i < e.target.length; i++) {
+    if(e.target[i].selected) {
+      var autofill = e.target[i].getAttribute('data-auto');
+      if(autofill) {
+        var terms = JSON.parse(autofill);
+        for (var term in terms) {
+          var input = document.getElementById(term);
+          if(input && !input.value) {
+            input.value = terms[term];
+          }
+        }
+      }
+    }
+  }
+}
 </script>
+
 

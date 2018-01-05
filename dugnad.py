@@ -55,6 +55,7 @@ class Form:
             self.readonly = blueprint.get('disabled')
             self.checked = False
             self.url = blueprint.get('url')
+            self.pick = blueprint.get('pick')
             self.path = blueprint.get('path')
             self.value = ""
 
@@ -73,6 +74,8 @@ class Form:
                 s += " data-url='%s'" % self.url
             if self.path:
                 s += " data-url='%s'" % path(self.path)
+            if self.pick:
+                s += " data-pick='%s'" % json.dumps(self.pick)
             if self.readonly:
                 s += " readonly"
             s += ">"
@@ -146,6 +149,9 @@ class Post:
         row = db.execute(query, [uuid]).fetchone()
         return cls(dict(row))
 
+    def excluded(self):
+        return False
+
     def __init__(self, attrs, proj=None):
         for k in attrs:
             setattr(self, k, attrs[k])
@@ -154,6 +160,10 @@ class Post:
         else:
             self.project = Project.find(self.project)
         self.annotation = json.loads(self.annotation)
+
+    def get(self, k):
+        if hasattr(self, k): return getattr(self, k)
+        if k in self.annotation: return self.annotation[k]
 
     def path(self):
         return path("/projects/%s/%s" % (self.project.slug, self.id))
@@ -191,7 +201,21 @@ class Project:
     def userlog(self, db, uid):
         query = "select * from transcriptions where project = ? and user = ? order by updated desc"
         rows = db.execute(query, [self.slug, uid]).fetchall()
-        return [Post(dict(row), self) for row in rows]
+        posts = []
+        sort = {}
+        for term in self.sort:
+            sort[term] = []
+        for row in rows:
+            post = Post(dict(row))
+            for term in self.sort:
+                value = post.get(term)
+                if value and value not in sort[term]:
+                    sort[term].append(value)
+            if not post.excluded():
+                posts.append(post)
+        for term in self.sort:
+            sort[term].sort()
+        return posts, sort
 
     def contribute(self, db, uid, data):
         finished = not data.get('later')
@@ -231,11 +255,18 @@ def query(raw, limitto=None):
         params = raw
     return "?" + urllib.urlencode(params)
 
+def dump(raw, exclude=['page', 'text']):
+    data = dict(raw)
+    for k in exclude: data.pop(k, None)
+    if not data: return ""
+    return json.dumps(data)
+
 SimpleTemplate.defaults["request"] = request
 SimpleTemplate.defaults["config"] = config
 SimpleTemplate.defaults["crumb"] = dropcrumb
 SimpleTemplate.defaults["path"] = path
 SimpleTemplate.defaults["url"] = url
+SimpleTemplate.defaults["dump"] = dump
 
 @hook('before_request')
 def before_request():
@@ -254,7 +285,7 @@ def before_request():
 @get('/')
 @view('index')
 def index():
-    changelog = Changelog('changelog')
+    changelog = Changelog('CHANGELOG')
     projects = []
     projects = [Project(f) for f in glob.glob("projects/*.yaml")]
     return { 'changelog': changelog, 'projects': projects }
@@ -262,7 +293,7 @@ def index():
 @get('/changelog')
 @view('changelog')
 def changelog():
-    changelog = Changelog('changelog')
+    changelog = Changelog('CHANGELOG')
     return { 'changelog': changelog }
 
 @get('/project/<slug>/overview')
@@ -313,9 +344,9 @@ def transcribe(slug, db):
 @get('/project/<slug>/userlog')
 def userlog(slug, db):
     project = Project.find(slug)
-    posts = project.userlog(db, request.uid)
+    posts, sort = project.userlog(db, request.uid)
     if request.query.view == "map":
-        return template("map", { 'project': project, 'posts': posts })
+        return template("map", { 'project': project, 'posts': posts, 'sort': sort })
     elif request.query.view == "browse":
         return template("browse", { 'project': project, 'posts': posts })
     return template("list", { 'project': project, 'posts': posts })

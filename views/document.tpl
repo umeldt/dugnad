@@ -27,6 +27,7 @@
       <h1><b>{{_(config['title'])}}</b> {{config['subheading']}}</h1>
     </a>
 
+    % include('user.tpl', user=request.user)
   </nav>
 
   <nav class=crumbs>
@@ -41,10 +42,16 @@
 
     <form method=get>
       <p>
-        <b>{{_('select-page')}}</b>
+        <b>{{_('select-page')}}</b>:
         <select id=select-page name=page>
         % for n in range(1, project.source['pages']):
-          <option>{{n}}</option>
+          <option value={{n}}>{{n + project.source.get('shift', 0)}}</option>
+        % end
+        </select>
+
+        <select id=document-index name=page>
+        % for item in project.source.get('index', []):
+          <option value={{item['page']}} data-auto="{{dump(item)}}">{{item['page'] + project.source.get('shift', 0)}}: {{item['text']}}</option>
         % end
         </select>
     </form>

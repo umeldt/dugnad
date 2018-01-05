@@ -16,6 +16,23 @@
 <script src='{{config['static']}}/dugnad.js'></script>
 
 <section class=stats>
+  % if sort:
+  <form method=get>
+    <input type=hidden name=view value=map>
+    % for term, values in sort.iteritems():
+    % if values:
+    <select name="{{term}}">
+      <option value="">-- {{_(term)}} --</option>
+      % for value in values:
+      <option>{{value}}</option>
+      % end
+    </select>
+    % end
+    % end
+    <input value="{{_('filter')}}" type=submit>
+  </form>
+  % end
+
   <div id=map>
   </div>
 </section>

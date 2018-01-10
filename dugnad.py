@@ -20,6 +20,8 @@ from bottle import get, post, route, hook, request, redirect, run, view
 from bottle import static_file, template, SimpleTemplate
 from bottle_utils.i18n import I18NPlugin, i18n_path, i18n_url, lazy_gettext as _
 
+bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 16
+
 SESSION = {
     'session.type': 'cookie',
     'session.cookie_expires': 60 * 60 * 24 * 365,

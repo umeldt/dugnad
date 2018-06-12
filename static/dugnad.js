@@ -201,14 +201,10 @@ document.addEventListener("DOMContentLoaded", function(e) {
     var att = '<a href="https://www.mapzen.com/rights">Attribution.</a>. Data &copy;<a href="https://openstreetmap.org/copyright">OSM</a> contributors.';
     var osm = new L.TileLayer(url, { minZoom: 1, maxZoom: 16, attribution: att });
 
-    var url = "https://opencache.statkart.no/gatekeeper/gk/gk.open";
-    var opts = {
-      layers: 'topo2',
-      format: 'image/png',
-      transparent: true,
+    var statkart = L.tileLayer("https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}", {
       attribution: "Kartverket"
-    };
-    var statkart = new L.TileLayer.WMS(url, opts);
+    });
+    // transparent: true,
 
     if(document.getElementById('map')) {
       T.map = L.map('map').setView([59, 9], 8);

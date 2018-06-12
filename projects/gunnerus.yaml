@@ -1,0 +1,95 @@
+title: Flora Norvegica
+hidden: true
+type: document
+image: /FN3.jpg
+description: “Gunnerus var mannen som ble prest uten teologisk embetseksamen, som ble biskop uten å ha hatt et ordinært sognekall, og som skrev Norges første flora uten å ha studert botanikk.” (Jørgensen et al, 2016:11) Her er den første oversettelsen til norsk av Flora Norvegica, først utgitt på latin av Johan Ernest Gunnerus i 1766. Det var den første floraverket for Norge. Bli med på botanisk dugnad og hjelp oss digitalisere denne legendariske delen av den norske kulturarven. Med din hjelp kan datidens plante- og kulturkunnskaper leve videre. Ta gjerne en titt på introduksjonsteksten for å kunne komme i gang med botanisk dugnad!
+georeference: true
+template: pdf
+help:
+  introduction: "Gunnerus sin Flora er ikke bygd systematisk. Artene er i tilfeldige ordning, tilsynelatende ettersom Gunnerus ble kjent med dem. Plantene ble samlet hovedsakelig i Gunnerus sin bispedømme, som omfattet alle regioner fra Romsdal i Møre og Romsdal til ØstFinnmark, like til grensen mot Russland. Totalt inneholder boken 1118 forskjellige plantearter. Oppgaven din er å fylle ut et indekskort for hver planteart. Indekskortet er bygd opp av forskjellige parametere, blant annet løpenummer, vitenskapelig navn, norsk navn, og bruk. Vær oppmerksom på informasjon kan være mangelfull. Korreksjoner eller kommentarer lagt inn i oversettelsen er interessante for oss, og de vil være i hakeparentes. Løpenummer: Løpenummeret er angitt med romertall og arabiske tall i hakeparentes. Eksempel: V [5]. Gunnerus vitenskapelig navn: Gunnerus sin vitenskapelig navn er neste begrep i hver art. Dette navnet består av to ord, på latinsk. Eksempel: Pulmonaria maritima. Ny vitenskapelig navn: Gunnerus brukte vitenskapelig navn før denne nomenklaturen ble standardisert. Derfor har noen av artene hans blitt gitt nye navn. Den nye vitenskapelige navnet vil du finne i hakeparentes, og kan være lik Gunnerus sin. Eksempel: [Mertensia maritima (...) Norsk navn: Det norske navnet er det folkelige navnet vi kaller arten etter i dag. Den vil være rett etter det nye vitenskapelige navnet innen hakeparentesen. Eksempel: (...), østersurt]. Kommentar om navnet: Her kan du legge inn noe tilleggsinformasjon eller kommentarer om navn. Eksempel: På norsk Kræke-, Krykke- eller Kreike-bær; Kræke-lyng, Krækling (konferer Pontoppidan. H.N.N. I c. V § 3 s. 212, 214). På samisk Kiuma, Kiuoma, Kiubma, Tiuoma, dessuten Zhiappes eller Zhiaëppes-morjek (det er svarte bær). Bruk: Hvordan blir denne planten brukt? Her kan det være mye tekst, eller svær lite. Eksempel: En oppløsning av bladene, og fortrinnsvis stenglene, er velegnet til å rense blodet. Lokalitet: Hvor ble den arten funnet? Det er som regel ganske lite informasjon om dette. Eksempel: Vokser i Åfjord og ofte i Nordlandene; dessuten på gården Stene [Steinan]."
+source:
+  document: /static/gunnerus.pdf
+  pages: 508
+  shift: -1
+  index:
+    - { page: 67, text: "I [1] strutseving", serialNumber: "I [1]", vernacularName: "strutseving" }
+    - { page: 81, text: "XX [20] linbendel", serialNumber: "XX [20]", vernacularName: "linbendel" }
+    - { page: 88, text: "XL [40] gul frøstjerne", serialNumber: "XL [40]", vernacularName: "gul frøstjerne" }
+    - { page: 95, text: "LX [60] timotei", serialNumber: "LX [60]", vernacularName: "timotei" }
+    - { page: 101, text: "LXXX [80] kildeurt", serialNumber: "LXXX [80]", vernacularName: "kildeurt" }
+    - { page: 109, text: "C [100] svarttopp", serialNumber: "C [100]", vernacularName: "svarttopp" }
+    - { page: 115, text: "CXX [120] nikkevintergrønn", serialNumber: "CXX [120]", vernacularName: "nikkevintergrønn" }
+    - { page: 119, text: "CXL [140] haredylle", serialNumber: "CXL [140]", vernacularName: "haredylle" }
+    - { page: 125, text: "CLX [160] issoleie", serialNumber: "CLX [160]", vernacularName: "issoleie" }
+    - { page: 130, text: "CLXXX [180] maiblom", serialNumber: "CLXXX [180]", vernacularName: "maiblom" }
+    - { page: 135, text: "CC [200] kjempesøtgras", serialNumber: "CC [200]", vernacularName: "kjempesøtgras" }
+    - { page: 142, text: "CCXX [220] tappgåseblom", serialNumber: "CCXX [220]", vernacularName: "tappgåseblom" }
+    - { page: 147, text: "CCXL [240] gullris", serialNumber: "CCXL [240]", vernacularName: "gullris" }
+    - { page: 152, text: "CCLX [260] flôghavre", serialNumber: "CCLX [260]", vernacularName: "flôghavre" }
+    - { page: 156, text: "CCLXXX [280] einer", serialNumber: "CCLXXX [280]", vernacularName: "einer" }
+    - { page: 161, text: "CCC [300] skrubbær", serialNumber: "CCC [300]", vernacularName: "skrubbær" }
+    - { page: 188, text: "CCCXX [320] stortrollur", serialNumber: "CCCXX [320]", vernacularName: "stortrollur" }
+    - { page: 194, text: "CCCXL [340] havsivaks", serialNumber: "CCCXL [340]", vernacularName: "havsivaks" }
+    - { page: 199, text: "CCCLX [360] cladonia", serialNumber: "CCCLX [360], Gunnerus vitenskapelig navn: cladonia" }
+    - { page: 204, text: "CCCLXXX [380] sommereik", serialNumber: "CCCLXXX [380]", vernacularName: "sommereik" }
+    - { page: 210, text: "CCCC [400] kamilleblom", serialNumber: "CCCC [400]", vernacularName: "kamilleblom" }
+    - { page: 215, text: "CCCCXX [420] barlind", serialNumber: "CCCCXX [420]", vernacularName: "barlind" }
+    - { page: 220, text: "CCCCXL [440] hvit nøkkerose", serialNumber: "CCCCXL [440]", vernacularName: "hvit nøkkerose" }
+    - { page: 226, text: "CCCCLX [460] knollkjeks", serialNumber: "CCCCLX [460]", vernacularName: "knollkjeks" }
+    - { page: 230, text: "CCCCLXXX [480] tvillingsiv", serialNumber: "CCCCLXXX [480]", vernacularName: "tvillingsiv" }
+    - { page: 235, text: "D [500] småpiggknopp", serialNumber: "D [500]", vernacularName: "småpiggknopp" }
+    - { page: 241, text: "DXX [520] småvasshår", serialNumber: "DXX [520]", vernacularName: "småvasshår" }
+    - { page: 245, text: "DXL [540] rødmelde", serialNumber: "DXL [540]", vernacularName: "rødmelde" }
+    - { page: 252, text: "DLX [560] hornlav", serialNumber: "DLX [560]", vernacularName: "hornlav" }
+    - { page: 257, text: "DLXXX [580] palmemose", serialNumber: "DLXXX [580]", vernacularName: "palmemose" }
+    - { page: 262, text: "DC [600] fjellrapp", serialNumber: "DC [600]", vernacularName: "fjellrapp" }
+    - { page: 265, text: "DCXX [620] begerhagtorn", serialNumber: "DCXX [620]", vernacularName: "begerhagtorn" }
+    - { page: 270, text: "DCXL [640] fjelltettegras", serialNumber: "DCXL [640]", vernacularName: "fjelltettegras" }
+    - { page: 275, text: "DCLX [660] tannkrusmose", serialNumber: "DCLX [660]", vernacularName: "tannkrusmose" }
+    - { page: 280, text: "DCLXXX [680] blindurt", serialNumber: "DCLXXX [680]", vernacularName: "blindurt" }
+    - { page: 284, text: "DCC [700] strandrør", serialNumber: "DCC [700]", vernacularName: "strandrør" }
+    - { page: 288, text: "DCCXX [720] veitistel", serialNumber: "DCCXX [720]", vernacularName: "veitistel" }
+    - { page: 293, text: "DCCXL [740] lodnestarr", serialNumber: "DCCXL [740]", vernacularName: "lodnestarr" }
+    - { page: 297, text: "DCCLX [760] småklokkebeger", serialNumber: "DCCLX [760]", vernacularName: "småklokkebeger" }
+    - { page: 301, text: "DCCLXXX [780] fjæresaltgras", serialNumber: "DCCLXXX [780]", vernacularName: "fjæresaltgras" }
+    - { page: 304, text: "DCCC [800] kråkekarse", serialNumber: "DCCC [800]", vernacularName: "kråkekarse" }
+    - { page: 310, text: "DCCCXX [820] rosmarinvier", serialNumber: "DCCCXX [820]", vernacularName: "rosmarinvier" }
+    - { page: 314, text: "DCCCXL [840] slyngball", serialNumber: "DCCCXL [840]", vernacularName: "slyngball" }
+    - { page: 320, text: "DCCCLX [860] krypsilkemose", serialNumber: "DCCCLX [860]", vernacularName: "krypsilkemose" }
+    - { page: 324, text: "DCCCLXXX [880] nål-art", serialNumber: "DCCCLXXX [880]", vernacularName: "nål-art" }
+    - { page: 328, text: "DCCCC [900] riddermusserong", serialNumber: "DCCCC [900]", vernacularName: "riddermusserong" }
+    - { page: 332, text: "DCCCCXX [920] gullhavre", serialNumber: "DCCCCXX [920]", vernacularName: "gullhavre" }
+    - { page: 336, text: "DCCCCXL [940] rosenlav", serialNumber: "DCCCCXL [940]", vernacularName: "rosenlav" }
+    - { page: 341, text: "DCCCCLX [960] strandvindel", serialNumber: "DCCCCLX [960]", vernacularName: "strandvindel" }
+    - { page: 350, text: "DCCCCLXXX [980] finkefrø", serialNumber: "DCCCCLXXX [980]", vernacularName: "finkefrø" }
+    - { page: 354, text: "M [1000] ægsopp", serialNumber: "M [1000]", vernacularName: "ægsopp" }
+    - { page: 361, text: "MXX [1020] Rhizocarpon oederi", serialNumber: "MXX [1020], Gunnerus vitenskapelig navn: Rhizocarpon oederi" }
+    - { page: 366, text: "MXXX [1040] beltesølvpigg", serialNumber: "MXXX [1040]", vernacularName: "beltesølvpigg" }
+    - { page: 372, text: "MLX [1060] bryum", serialNumber: "MLX [1060], Gunnerus vitenskapelig navn: bryum" }
+    - { page: 377, text: "MLXXX [1080] høyfjellsklokke", serialNumber: "MLXXX [1080]", vernacularName: "høyfjellsklokke" }
+    - { page: 381, text: "MC [1100] skredarve", serialNumber: "MC [1100]", vernacularName: "skredarve" }
+  dzi: /static/gunnerus/
+key: _none
+markings: True
+sticky: serialNumber, vernacularName, currentPage
+order: [Løpenummer, Taksonomi, Geografi, Etnobotanikk, Kommentar ]
+forms:
+  Løpenummer:
+    - { name: serialNumber, type: text }
+    - { name: currentPage, type: hidden }
+  Taksonomi:
+    - { name: vernacularName, type: text, disabled: true }
+    - { name: verbatimScientificName, type: text }
+    - { name: scientificName, type: text }
+  Geografi:
+    - { name: locality, type: text }
+    - { name: "Navn lokalitet", type: text }
+    - { name: "Bruk lokalitet", type: text }
+  Etnobotanikk:
+    - { name: "Norsk navn", type: text }
+    - { name: "Kommentar om navnet", type: text }
+    - { name: "Bruk", type: text }
+  Kommentar:
+    - { name: "Kommentar", type: text }
+submit: transcribe
+sort: [ scientificName ]

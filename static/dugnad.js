@@ -331,8 +331,8 @@ document.addEventListener("DOMContentLoaded", function(e) {
     helpln[i].removeAttribute('title');
     helpln[i].onclick = function(e) {
       var help = document.getElementById('helptext');
-      var text = e.target.parentNode.getAttribute('data-title');
-      help.innerHTML = text.replace("\n\n", "<p>").replace("\n", "<br>");
+      // var text = e.target.parentNode.getAttribute('data-title');
+      // help.innerHTML = text.replace("\n\n", "<p>").replace("\n", "<br>");
       return false;
     }
   }
@@ -431,5 +431,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
       return false;
     }
   }
+
+  tippy('img', { trigger: 'click' });
 });
 

@@ -45,4 +45,3 @@ forms:
   comments:
     - { name: remarks, type: text, help: help-gunnerus-kommentar }
 submit: transcribe
-s

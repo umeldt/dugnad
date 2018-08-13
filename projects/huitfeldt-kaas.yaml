@@ -71,12 +71,14 @@ forms:
     - { name: "scientificName", type: text, pick: [Salmo alpinus, Gasterosteus aculeatus, Salmo eriox, Coregonus lavaretus, Perca fluviatilis, Lota lota, Esox lucius, Thymallus thymallus, Phoxinus aphya, Petromyzon fluviatilis, Gastoresteus pingitius, Leuciscus ritulus, Coregonus albula, Osmerus eperlanus, Abramis brama, Aspius alburnus, Leuciscus grislagine, Leuciscus idus, Cottus gobio v. poecilopus, Acerina cernua, Abramis blicca, Lucioperca lucioperca, Leuciscus cephalus, Aspius aspius, Leuciscus erythropthalmus, Salmo salar, Pleuronectes flemus, Anguilla anguilla, Petromyzon marinus, Cyprinus carassius, Cyprinus carpio, Thinca vulgaris, Cyprinus auratus, Salmo fontinalis, Amiurus catus, Micropterus salmonides, Salmo iridens, Leuciscus idus v. auratus] }
   locality:
     - { name: "locality", type: text, path: "/lookup/nve" }
+    - { name: "verbatimLocality", type: text }
     - { name: "footprintWKT", type: text, disabled: true }
     - { name: "locationID", type: text }
     - { name: "verbatimElevation", type: text }
     - { name: "decimalLatitude", type: hidden }
     - { name: "decimalLongitude", type: hidden }
     - { name: "coordinateUncertaintyInMeters", type: hidden }
+    - { name: "locationRemarks", type: textfield }
     - { name: "introduced", type: checkbox }
   comment:
     - { name: "annotationRemarks", type: textfield }

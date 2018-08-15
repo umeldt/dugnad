@@ -17,7 +17,7 @@ from beaker.middleware import SessionMiddleware
 import bottle
 import bottle.ext.sqlite
 from bottle import get, post, route, hook, request, redirect, run, view
-from bottle import static_file, template, SimpleTemplate
+from bottle import static_file, template, SimpleTemplate, FormsDict
 from bottle_utils.i18n import I18NPlugin, i18n_path, i18n_url, lazy_gettext as _
 
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 16
@@ -322,7 +322,7 @@ def markings_post(slug, page, db):
 def project(slug):
     def document(project):
         forms = [Form(form, project.forms[form]) for form in project.order]
-        [form.validate(request.query) for form in forms]
+        [form.validate(FormsDict.decode(request.query)) for form in forms]
         return template("document", { 'project': project, 'forms': forms })
     
     def transcribe(project):

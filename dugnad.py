@@ -9,6 +9,7 @@ import uuid
 import yaml
 import urllib
 import logging
+import hashlib
 import datetime
 import requests
 
@@ -16,7 +17,8 @@ from beaker.middleware import SessionMiddleware
 
 import bottle
 import bottle.ext.sqlite
-from bottle import get, post, route, hook, request, redirect, run, view
+from bottle import get, post, route, hook, request, response, redirect
+from bottle import run, view
 from bottle import static_file, template, SimpleTemplate, FormsDict
 from bottle_utils.i18n import I18NPlugin, i18n_path, i18n_url, lazy_gettext as _
 
@@ -155,6 +157,7 @@ class Post:
         return False
 
     def __init__(self, attrs, proj=None):
+        self.raw = attrs
         for k in attrs:
             setattr(self, k, attrs[k])
         if proj:
@@ -200,9 +203,27 @@ class Project:
         for k in attrs:
             setattr(self, k, attrs[k])
 
-    def userlog(self, db, uid):
+    def json(self, db):
+        query = "select * from transcriptions where project = ? order by updated desc limit 5000"
+        rows = db.execute(query, [self.slug]).fetchall()
+        posts = []
+        for row in rows:
+            post = dict(row)
+            if 'user' in post and post['user'] != "anonymous":
+                post['user'] = hashlib.sha512(post['user']).hexdigest()
+            if 'annotation' in post:
+                post['data'] = json.loads(post['annotation'])
+                del post['annotation']
+                if 'annotation' in post['data']:
+                    del post['data']['annotation']
+            posts.append(post)
+        return json.dumps(posts)
+
+    def userlog(self, db, uid, skip):
         query = "select * from transcriptions where project = ? and user = ? order by updated desc"
-        rows = db.execute(query, [self.slug, uid]).fetchall()
+        query = "select * from transcriptions where project = ? order by updated desc limit 25 offset ?"
+        # rows = db.execute(query, [self.slug, uid]).fetchall()
+        rows = db.execute(query, [self.slug, skip]).fetchall()
         posts = []
         sort = {}
         for term in self.sort:
@@ -289,7 +310,12 @@ def before_request():
 def index():
     changelog = Changelog('CHANGELOG')
     projects = []
-    projects = [Project(f) for f in glob.glob("projects/*.yaml")]
+    for f in glob.glob("projects/*.yaml"):
+        try:
+            project = Project(f)
+            projects.append(project)
+        except:
+            None
     return { 'changelog': changelog, 'projects': projects }
 
 @get('/changelog')
@@ -346,12 +372,18 @@ def transcribe(slug, db):
 @get('/project/<slug>/userlog')
 def userlog(slug, db):
     project = Project.find(slug)
-    posts, sort = project.userlog(db, request.uid)
+    posts, sort = project.userlog(db, request.uid, request.query.skip or 0)
     if request.query.view == "map":
         return template("map", { 'project': project, 'posts': posts, 'sort': sort })
     elif request.query.view == "browse":
         return template("browse", { 'project': project, 'posts': posts })
     return template("list", { 'project': project, 'posts': posts })
+
+@get('/project/<slug>/export.json')
+def jsonexport(slug, db):
+    project = Project.find(slug)
+    response.content_type = "application/json; charset=utf-8"
+    return project.json(db)
 
 @get('/project/<slug>/<uuid>')
 def review(slug, uuid, db):

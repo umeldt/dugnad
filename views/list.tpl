@@ -9,7 +9,8 @@
   <h1>{{_(project.title)}}</h1>
   <p>
     <a href='?view=map'>{{_('map')}}</a> ·
-    <a href='?view=browse'>{{_('browse')}}</a>
+    <a href='?view=browse'>{{_('browse')}}</a> ·
+    <a href='?skip={{int((request.query.skip or 0)) + 25}}'>{{_('older')}}</a>
 
   <table id=userlog class=list>
     <thead>

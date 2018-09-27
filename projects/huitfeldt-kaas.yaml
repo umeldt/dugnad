@@ -84,4 +84,3 @@ forms:
     - { name: "annotationRemarks", type: textfield }
 submit: transcribe
 sort: ['scientificName', 'locality']
-

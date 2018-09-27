@@ -204,7 +204,7 @@ class Project:
             setattr(self, k, attrs[k])
 
     def json(self, db):
-        query = "select * from transcriptions where project = ? order by updated desc limit 5000"
+        query = "select * from transcriptions where project = ? order by updated desc"
         rows = db.execute(query, [self.slug]).fetchall()
         posts = []
         for row in rows:
@@ -220,10 +220,8 @@ class Project:
         return json.dumps(posts)
 
     def userlog(self, db, uid, skip):
-        query = "select * from transcriptions where project = ? and user = ? order by updated desc"
-        query = "select * from transcriptions where project = ? order by updated desc limit 25 offset ?"
-        # rows = db.execute(query, [self.slug, uid]).fetchall()
-        rows = db.execute(query, [self.slug, skip]).fetchall()
+        query = "select * from transcriptions where project = ? and user = ? order by updated desc limit 50 offset ?"
+        rows = db.execute(query, [self.slug, uid, skip]).fetchall()
         posts = []
         sort = {}
         for term in self.sort:

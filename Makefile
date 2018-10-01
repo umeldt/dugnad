@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 all: db config.yaml messages
 
 db:
@@ -7,5 +9,5 @@ config.yaml:
 	cp config.def.yaml config.yaml
 
 messages:
-	for d in lang/*/LC_MESSAGES; do cd $$d; msgfmt messages.po; done
+	for d in lang/*/LC_MESSAGES; do pushd $$d; msgfmt messages.po; popd; done
 

@@ -7,5 +7,5 @@ config.yaml:
 	cp config.def.yaml config.yaml
 
 messages:
-	cd lang/nb_NO/LC_MESSAGES; msgfmt messages.po
+	for d in lang/*/LC_MESSAGES; do cd $$d; msgfmt messages.po; done
 

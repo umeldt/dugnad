@@ -20,7 +20,7 @@ var viewer = OpenSeadragon({
   initialPage: currentpage ? currentpage.value : 0,
   prefixUrl: "/static/images/",
   tileSources: [
-  % for n in range(1, project.source['pages']):
+  % for n in range(0, project.source['pages']):
     "{{project.source['dzi']}}{{n}}.dzi.dzi",
   % end
   ]

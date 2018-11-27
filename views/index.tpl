@@ -5,17 +5,6 @@
   <section>
     <h1>{{_('welcome')}}</h1>
 
-<!--
-    <aside>
-      <h2>{{_('recent-changes')}}</h2>
-      % for change in changelog.changes[:4]:
-        <dt><time>{{change['date']}}</time></dt>
-        <dd>{{change['text']}}</dd>
-      % end
-      <p><a href='changelog'>{{_('all-changes')}}</a>
-    </aside>
--->
-  
     <p>{{_('introduction')}}
   </section>
 </section>

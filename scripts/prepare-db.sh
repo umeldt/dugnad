@@ -1,5 +1,11 @@
 #!/bin/sh
 
-sqlite3 dugnad.db 'CREATE TABLE IF NOT EXISTS transcriptions(id, key, user, project, date, annotation, finished, updated);'
-sqlite3 dugnad.db 'CREATE TABLE IF NOT EXISTS markings(id, post, project, page, markings, user, date);'
+cat <<EOF | sqlite3 dugnad.db
+CREATE TABLE IF NOT EXISTS
+  sources(id, project, completed, skipped, priority, difficulty, data);
+CREATE TABLE IF NOT EXISTS
+  entries(id, user, project, date, data, finished, updated);
+CREATE TABLE IF NOT EXISTS
+  markings(id, user, project, date, entry, page, markings);
+EOF
 

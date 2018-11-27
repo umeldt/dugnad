@@ -22,6 +22,12 @@ from bottle import run, view
 from bottle import static_file, template, SimpleTemplate, FormsDict
 from bottle_utils.i18n import I18NPlugin, i18n_path, i18n_url, lazy_gettext as _
 
+import gi
+gi.require_version('Vips', '8.0')
+from gi.repository import Vips
+
+config = yaml.load(open("config.yaml"))
+
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 16
 
 SESSION = {
@@ -32,13 +38,22 @@ SESSION = {
 }
 
 app = bottle.default_app()
-config = yaml.load(open("config.yaml"))
 sqlite = bottle.ext.sqlite.Plugin(dbfile='dugnad.db')
 app.install(sqlite)
 app = I18NPlugin(app, config['languages'], config['languages'][0][0], "lang")
 app = SessionMiddleware(app, SESSION)
 
 logging.basicConfig(level=logging.INFO)
+
+def deepzoom(url):
+    url = urllib.unquote(url.strip())
+    key = hashlib.sha256(url).hexdigest()
+    name = "static/tmp/" + key
+    if not os.path.exists(name + "_files"):
+        urllib.urlretrieve(source, "%s.jpg" % name)
+        image = Vips.Image.new_from_file("%s.jpg" % name)
+        image.dzsave(name, layout="dz")
+    return "%s.dzi" % key
 
 class Form:
     class Button:
@@ -146,10 +161,30 @@ class Changelog:
                 match = re.match(self.fmt, line)
                 if match: self.changes.append(match.groupdict())
 
-class Post:
+class Source:
+    @classmethod
+    def random(cls, db, project):
+        query = "SELECT * FROM sources WHERE project = ?"
+        row = db.execute(query, [project.slug]).fetchone()
+        if row: return cls(dict(row))
+        return None
+
+    def weighted(cls, db, project):
+        query = """SELECT * FROM sources WHERE project = ?
+                   ORDER BY priority LIMIT 100"""
+        rows = db.execute(query, [project.slug]).fetchall()
+        if rows: return cls(dict(random.choice(rows)))
+        return None
+
+    def __init__(self, attrs):
+        self.raw = attrs
+        for k in attrs: setattr(self, k, attrs[k])
+        self.data = json.loads(self.data)
+
+class Entry:
     @classmethod
     def find(cls, db, uuid):
-        query = "select * from transcriptions where id = ?"
+        query = "SELECT * FROM entries WHERE id = ?"
         row = db.execute(query, [uuid]).fetchone()
         return cls(dict(row))
 
@@ -158,36 +193,35 @@ class Post:
 
     def __init__(self, attrs, proj=None):
         self.raw = attrs
-        for k in attrs:
-            setattr(self, k, attrs[k])
+        for k in attrs: setattr(self, k, attrs[k])
         if proj:
             self.project = proj
         else:
             self.project = Project.find(self.project)
-        self.annotation = json.loads(self.annotation)
+        self.data = json.loads(self.data)
 
     def get(self, k):
         if hasattr(self, k): return getattr(self, k)
-        if k in self.annotation: return self.annotation[k]
+        if k in self.data: return self.data[k]
 
     def path(self):
         return path("/projects/%s/%s" % (self.project.slug, self.id))
 
-    def update(self, db, uid, data):
+    def update(self, db, uid, entry):
         # finished = not data.get('later')
-        query = "delete from markings where post = ?"
+        query = "DELETE FROM markings WHERE entry = ?"
         db.execute(query, [self.id])
-        if 'annotation' in data:
-            pages = json.loads(data['annotation'])
+        if 'data' in entry:
+            pages = json.loads(entry['data'])
             for page, marks in pages.iteritems():
                 self.project.addmarkings(db, self.id, uid, page, marks)
         now = str(datetime.datetime.now())
-        query = "update transcriptions set annotation = ?, updated = ? where id = ?"
-        db.execute(query, [json.dumps(dict(data)), now, self.id])
+        query = "UPDATE entries SET data = ?, updated = ? WHERE id = ?"
+        db.execute(query, [json.dumps(dict(entry)), now, self.id])
 
     def wkt(self):
-        if self.annotation.get('footprintWKT'):
-            return json.dumps(self.annotation['footprintWKT'])
+        if self.data.get('footprintWKT'):
+            return json.dumps(self.data['footprintWKT'])
 
 class Project:
     @classmethod
@@ -200,63 +234,65 @@ class Project:
         self.hidden = False
         self.finished = False
         attrs = yaml.load(open(path, 'r'))
-        for k in attrs:
-            setattr(self, k, attrs[k])
+        for k in attrs: setattr(self, k, attrs[k])
 
     def json(self, db):
-        query = "select * from transcriptions where project = ? order by updated desc"
+        query = "SELECT * FROM entries WHERE project = ? ORDER BY updated DESC"
         rows = db.execute(query, [self.slug]).fetchall()
-        posts = []
+        entries = []
         for row in rows:
-            post = dict(row)
-            if 'user' in post and post['user'] != "anonymous":
-                post['user'] = hashlib.sha512(post['user']).hexdigest()
-            if 'annotation' in post:
-                post['data'] = json.loads(post['annotation'])
-                del post['annotation']
-                if 'annotation' in post['data']:
-                    del post['data']['annotation']
-            posts.append(post)
-        return json.dumps(posts)
+            entry = dict(row)
+            if 'user' in entry and entry['user'] != "anonymous":
+                entry['user'] = hashlib.sha512(entry['user']).hexdigest()
+            if 'data' in entry:
+                entry['data'] = json.loads(entry['data'])
+                del entry['data']
+                if 'data' in entry['data']:
+                    del entry['data']['data']
+            entries.append(entry)
+        return json.dumps(entries)
 
     def userlog(self, db, uid, skip):
-        query = "select * from transcriptions where project = ? and user = ? order by updated desc limit 50 offset ?"
+        query = """SELECT * FROM entries WHERE project = ? AND user = ?
+                   ORDER BY updated DESC LIMIT 50 OFFSET ?"""
         rows = db.execute(query, [self.slug, uid, skip]).fetchall()
-        posts = []
+        entries = []
         sort = {}
         for term in self.sort:
             sort[term] = []
         for row in rows:
-            post = Post(dict(row))
+            entry = Entry(dict(row))
             for term in self.sort:
-                value = post.get(term)
+                value = entry.get(term)
                 if value and value not in sort[term]:
                     sort[term].append(value)
-            if not post.excluded():
-                posts.append(post)
+            if not entry.excluded():
+                entries.append(entry)
         for term in self.sort:
             sort[term].sort()
-        return posts, sort
+        return entries, sort
 
-    def contribute(self, db, uid, data):
-        finished = not data.get('later')
-        postid = str(uuid.uuid4())
-        if 'annotation' in data and data['annotation']:
-            pages = json.loads(data['annotation'])
+    def contribute(self, db, uid, entry):
+        finished = not entry.get('later')
+        entry = str(uuid.uuid4())
+        if 'data' in entry and entry['data']:
+            pages = json.loads(entry['data'])
             for page, marks in pages.iteritems():
-                self.addmarkings(db, postid, uid, page, marks)
+                self.addmarkings(db, entry, uid, page, marks)
         now = str(datetime.datetime.now())
-        query = "insert into transcriptions values(?, ?, ?, ?, ?, ?, ?, ?)"
-        # id, key, user, project, date, annotation, finished, updated
-        db.execute(query, [postid, "", uid, self.slug, now,
-                json.dumps(dict(data)), finished, now])
+        query = """INSERT INTO
+                   entries(id, user, project, date, data, finished, updated)
+                   VALUES(?, ?, ?, ?, ?, ?, ?)"""
+        db.execute(query, [entry, uid, self.slug, now,
+                json.dumps(dict(entry)), finished, now])
 
-    def addmarkings(self, db, postid, uid, page, data):
-        # id, post, project, page, markings, user, date
+    def addmarkings(self, db, entry, uid, page, data):
         now = str(datetime.datetime.now())
-        query = "insert into markings values(?, ?, ?, ?, ?, ?, ?)"
-        db.execute(query, [str(uuid.uuid4()), postid, self.slug, page,
-                   json.dumps(data), uid, now])
+        query = """INSERT INTO
+                   markings(id, user, project, date, entry, page, markings)
+                   VALUES(?, ?, ?, ?, ?, ?, ?)"""
+        db.execute(query, [str(uuid.uuid4()), uid, self.slug, date, entry,
+                   page, json.dumps(data), now])
 
 def dropcrumb(text, url=None):
     request.crumbs.append((url, text))
@@ -306,7 +342,6 @@ def before_request():
 @get('/')
 @view('index')
 def index():
-    changelog = Changelog('CHANGELOG')
     projects = []
     for f in glob.glob("projects/*.yaml"):
         try:
@@ -314,7 +349,7 @@ def index():
             projects.append(project)
         except:
             None
-    return { 'changelog': changelog, 'projects': projects }
+    return { 'projects': projects }
 
 @get('/changelog')
 @view('changelog')
@@ -330,34 +365,46 @@ def overview(slug):
 
 @get('/project/<slug>/markings/<page>')
 def markings(slug, page, db):
-    query = "select * from markings where project = ? and page = ?"
+    query = "SELECT * FROM markings WHERE project = ? AND page = ?"
     rows = db.execute(query, [slug, page])
     results = [dict(r) for r in rows]
     return json.dumps(results)
 
 @get('/project/<slug>/<uuid>/markings/<page>')
-def markings_post(slug, page, db):
-    query = "select * from markings where id = ? and page = ?"
+def markings_entries(slug, page, db):
+    query = "SELECT * FROM markings WHERE id = ? AND page = ?"
     rows = db.execute(query, [slug, page])
     results = [dict(r) for r in rows]
     return json.dumps(results)
 
 @get('/project/<slug>')
-def project(slug):
-    def document(project):
+def project(slug, db):
+    def document(db, project):
         forms = [Form(form, project.forms[form]) for form in project.order]
         [form.validate(FormsDict.decode(request.query)) for form in forms]
         return template("document", { 'project': project, 'forms': forms })
-    
-    def transcribe(project):
-        pass
+
+    def random(db, project):
+        forms = [Form(form, project.forms[form]) for form in project.order]
+        source = Source.random(db, project)
+        return template("image", {
+            'project': project, 'forms': forms, 'source': source
+        })
+
+    def weighted(db, project):
+        forms = [Form(form, project.forms[form]) for form in project.order]
+        source = Source.weighted(db, project)
+        return template("image", {
+            'project': project, 'forms': forms, 'source': source
+        })
 
     project = Project.find(slug)
     dispatch = {
         'document': document,
-        'transcription': transcribe
+        'random': random,
+        'weighted': weighted
     }
-    return dispatch[project.type](project)
+    return dispatch[project.type](db, project)
 
 @post('/project/<slug>')
 def transcribe(slug, db):
@@ -370,12 +417,13 @@ def transcribe(slug, db):
 @get('/project/<slug>/userlog')
 def userlog(slug, db):
     project = Project.find(slug)
-    posts, sort = project.userlog(db, request.uid, request.query.skip or 0)
+    entries, sort = project.userlog(db, request.uid, request.query.skip or 0)
+    params = { 'project': project, 'entries': entries, 'sort': sort }
     if request.query.view == "map":
-        return template("map", { 'project': project, 'posts': posts, 'sort': sort })
+        return template('map', params)
     elif request.query.view == "browse":
-        return template("browse", { 'project': project, 'posts': posts })
-    return template("list", { 'project': project, 'posts': posts })
+        return template('browse', params)
+    return template("list", params)
 
 @get('/project/<slug>/export.json')
 def jsonexport(slug, db):
@@ -386,18 +434,18 @@ def jsonexport(slug, db):
 @get('/project/<slug>/<uuid>')
 def review(slug, uuid, db):
     project = Project.find(slug)
-    post = Post.find(db, uuid)
-    if post.user != request.uid:
+    entry = Entry.find(db, uuid)
+    if entry.user != request.uid:
         redirect(path('/project/%s/userlog' % slug))
     forms = [Form(form, project.forms[form]) for form in project.order]
-    [form.validate(post.annotation) for form in forms]
+    [form.validate(entry.data) for form in forms]
     return template("document",{'id': uuid, 'project': project, 'forms': forms})
 
 @post('/project/<slug>/<uuid>')
 def revise(slug, uuid, db):
-    post = Post.find(db, uuid)
-    if post.user == request.uid:
-        post.update(db, request.uid, request.forms)
+    entry = Entry.find(db, uuid)
+    if entry.user == request.uid:
+        entry.update(db, request.uid, request.forms)
     redirect(path('/project/%s/userlog' % slug))
 
 @get('/lookup/<key>')
@@ -405,9 +453,9 @@ def lookup(key, db):
     q = request.query.q
     if key in config['lookup'] and q:
         src = config['lookup'][key]
-        query = "select * from %s where %s like ? limit 25" % (
+        query = "SELECT * FROM %s WHERE %s LIKE ? LIMIT 25" % (
                 src['table'], src['key'])
-        rows = db.execute(query, ["%" + q + "%"]).fetchall()
+        rows = db.execute(query, [q + "%"]).fetchall()
         results = [dict(r) for r in rows]
         return json.dumps(results)
 

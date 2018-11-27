@@ -10,6 +10,7 @@ source:
   document: /static/huitfeldt-kaas.pdf
   pages: 176
   shift: -1
+  indexshift: -1
   index:
     - { page: 27, text: Første indvandrere }
     - { page: 27, text: Røie (Salmo alpinus), scientificName: Salmo alpinus }

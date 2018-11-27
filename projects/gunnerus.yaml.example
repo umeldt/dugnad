@@ -1,7 +1,6 @@
 title: project-gunnerus-title
-hidden: true
 type: document
-image: /FN3.jpg
+image: gunnerus.jpg
 description: project-gunnerus-description
 georeference: true
 template: pdf
@@ -11,6 +10,7 @@ source:
   document: /static/gunnerus.pdf
   pages: 328
   shift: +61
+  indexshift: -61
   index: 
     - { page:  67, text: "I [1] strutseving", serialNumber: "I [1]", "Gunnerus vitenskapelig navn": "Osmunda Struthiopteris ", scientificName: "Matteuccia struthiopteris", vernacularName: "strutseving" }
     - { page:  68, text: "II [2] vårrublom", serialNumber: "II [2]", "Gunnerus vitenskapelig navn": "Draba verna ", scientificName: "Draba verna", vernacularName: "vårrublom" }
@@ -1148,21 +1148,22 @@ forms:
   locality:
     - { name: locality, type: text, help: help-gunnerus-locality }
   ethnobotany:
-    - { name: vernacularName, type: text, help: help-gunnerus-norsk_navn }
-    - { name: nameRemarks, type: text, help: help-gunnerus-kom_navnet }
-    - { name: "Bruk 1", type: text, help: help-gunnerus-bruk }
-    - { name: "Bruk kategori 1", type: text, pick: [ Mat, Mattilsetning, Dyrefor, Bievennlige planter, Materialer, Brensel, Sosial bruk, Gift, Medisin, Miljøbruk ], help: help-gunnerus-bruk_kategori }
-    - { name: "Kilde 1", type: text, help: help-gunnerus-kilde}
-    - { name: "Bruk 2", type: text, help: help-gunnerus-bruk }
-    - { name: "Bruk kategori 2", type: text, pick: [ Mat, Mattilsetning, Dyrefor, Bievennlige planter, Materialer, Brensel, Sosial bruk, Gift, Medisin, Miljøbruk ], help: help-gunnerus-bruk_kategori }
-    - { name: "Kilde 2", type: text, help: help-gunnerus-kilde}
-    - { name: "Bruk 3", type: text, help: help-gunnerus-bruk }
-    - { name: "Bruk kategori 3", type: text, pick: [ Mat, Mattilsetning, Dyrefor, Bievennlige planter, Materialer, Brensel, Sosial bruk, Gift, Medisin, Miljøbruk ], help: help-gunnerus-bruk_kategori }
-    - { name: "Kilde 3", type: text, help: help-gunnerus-kilde}
-    - { name: "Bruk 4", type: text, help: help-gunnerus-bruk }
-    - { name: "Bruk kategori 4", type: text, pick: [ Mat, Mattilsetning, Dyrefor, Bievennlige planter, Materialer, Brensel, Sosial bruk, Gift, Medisin, Miljøbruk ], help: help-gunnerus-bruk_kategori }
-    - { name: "Kilde 4", type: text, help: help-gunnerus-kilde}
+    - { name: vernacularName, type: text, help: help-gunnerus-vernacularName }
+    - { name: gunnerusVernacularName, type: text }
+    - { name: nameRemarks, type: text, help: help-gunnerus-nameRemarks }
+    - { name: "Bruk 1", type: text, help: help-gunnerus-use }
+    - { name: "Bruk kategori 1", type: select, pick: [ "", Mat, Mattilsetning, Dyrefor, Bievennlige planter, Materialer, Brensel, Sosial bruk, Gift, Medisin, Miljøbruk ], help: help-gunnerus-category }
+    - { name: "Kilde 1", type: text, help: help-gunnerus-source }
+    - { name: "Bruk 2", type: text, help: help-gunnerus-use }
+    - { name: "Bruk kategori 2", type: select, pick: [ "", Mat, Mattilsetning, Dyrefor, Bievennlige planter, Materialer, Brensel, Sosial bruk, Gift, Medisin, Miljøbruk ], help: help-gunnerus-category }
+    - { name: "Kilde 2", type: text, help: help-gunnerus-source}
+    - { name: "Bruk 3", type: text, help: help-gunnerus-use }
+    - { name: "Bruk kategori 3", type: select, pick: [ "", Mat, Mattilsetning, Dyrefor, Bievennlige planter, Materialer, Brensel, Sosial bruk, Gift, Medisin, Miljøbruk ], help: help-gunnerus-category }
+    - { name: "Kilde 3", type: text, help: help-gunnerus-source}
+    - { name: "Bruk 4", type: text, help: help-gunnerus-use }
+    - { name: "Bruk kategori 4", type: select, pick: [ "", Mat, Mattilsetning, Dyrefor, Bievennlige planter, Materialer, Brensel, Sosial bruk, Gift, Medisin, Miljøbruk ], help: help-gunnerus-category }
+    - { name: "Kilde 4", type: text, help: help-gunnerus-source }
   comments:
-    - { name: remarks, type: text, help: help-gunnerus-kommentar }
+    - { name: remarks, type: textfield, help: help-gunnerus-kommentar }
 submit: transcribe
 sort: [ serialNumber ]

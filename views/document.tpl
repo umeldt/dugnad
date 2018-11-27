@@ -9,6 +9,7 @@
 <link rel='stylesheet' href='{{config['static']}}/leaflet.draw.css'>
 <link rel='stylesheet' href='{{config['static']}}/leaflet.measure.css'>
 <link rel='stylesheet' href='{{config['static']}}/auto-complete.css'>
+<link rel='stylesheet' href='{{config['static']}}/tippy.css'>
 
 <script src='{{config['static']}}/openseadragon.js'></script>
 <script src='{{config['static']}}/openseadragon-fabric.js'></script>
@@ -19,6 +20,7 @@
 <script src='{{config['static']}}/wicket.js'></script>
 <script src='{{config['static']}}/wicket-leaflet.js'></script>
 <script src='{{config['static']}}/auto-complete.js'></script>
+<script src='{{config['static']}}/tippy.all.min.js'></script>
 <script src='{{config['static']}}/dugnad.js'></script>
 
 <header>
@@ -51,7 +53,7 @@
 
         <select id=document-index name=page>
         % for item in project.source.get('index', []):
-          <option value={{item['page']}} data-auto="{{dump(item)}}">{{item['page'] + project.source.get('shift', 0)}}: {{item['text']}}</option>
+          <option value={{item['page'] + project.source.get('indexshift', 0)}} data-auto="{{dump(item)}}">{{item['page'] }}: {{item['text']}}</option>
         % end
         </select>
     </form>

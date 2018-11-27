@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # encoding: utf-8
 
+from __future__ import unicode_literals
 import os
 import re
 import glob
@@ -56,20 +57,65 @@ def deepzoom(url):
     return "%s.dzi" % key
 
 class Form:
+    @staticmethod
+    def build(blueprint):
+        if blueprint['type'] == "textfield":
+            return [Form.Textfield(blueprint)]
+        elif blueprint['type'] == "select":
+            return [Form.Select(blueprint)]
+        elif blueprint['type'] == "annotation":
+            return [Form.Input({'type': 'text',
+                                'name': 'marked-pages',
+                                'disabled': True
+                               }),
+                    Form.Input({'type': 'hidden', 'name': blueprint['name']}),
+                    Form.Button({'name': 'mark-page'}),
+                    Form.Button({'name': 'removefabric'})
+                   ]
+        elif blueprint['type'] == "multi":
+            return [Form.Row(blueprint, r) for r in range(blueprint["rows"])]
+        else:
+            return [Form.Input(blueprint)]
+
+
     class Button:
         def __init__(self, blueprint):
             self.name = blueprint['name']
+            self.text = self.name
             self.type = "button"
 
         def tohtml(self):
             s = "<button id='%s' name='%s'>%s</button>" % (
-                    self.name, self.name, _(self.name))
+                    self.name, self.name, _(self.text))
+            return s
+
+    class Select:
+        def __init__(self, blueprint):
+            self.type = blueprint['type']
+            self.name = blueprint['name']
+            self.text = self.name
+            self.options = blueprint['pick']
+            self.helptext = blueprint.get('help')
+
+        def tohtml(self, label=True):
+            s = ""
+            if label:
+                s += "<label>%s</label>\n" % _(self.text)
+            s += "<select name='%s'>" % self.name
+            for option in self.options:
+                s += "<option>%s</option>" % option
+            s += "</select>"
+            if self.helptext:
+              s += "<a class=help title='%s'>" % _(self.helptext)
+              s += "<img src='/static/images/help.png'>"
+              s += "</a>"
             return s
 
     class Input:
         def __init__(self, blueprint):
             self.type = blueprint['type']
             self.name = blueprint['name']
+            self.text = self.name
             self.size = blueprint.get('size', "24")
             self.readonly = blueprint.get('disabled')
             self.checked = False
@@ -77,18 +123,22 @@ class Form:
             self.pick = blueprint.get('pick')
             self.path = blueprint.get('path')
             self.value = ""
+            self.nolabel = False
+            self.helptext = blueprint.get('help')
 
         def tohtml(self, label=True):
             s = ""
-            if label and self.type != "hidden":
-                s += "<label>%s</label>\n" % _(self.name)
+            if label and self.type != "hidden" and not self.nolabel:
+                s += "<label>%s</label>\n" % _(self.text)
             s += "<input type=%s name='%s'" % (self.type, self.name)
             s += " size='%s'" % self.size
             s += " id='%s'" % self.name
+            if self.nolabel:
+                s += " placeholder='%s'" % _(self.text)
             if self.checked:
                 s += " checked" 
             if self.value:
-                s += " value='%s'" % self.value
+                s += " value='%s'" % self.value # .decode('utf-8')
             if self.url:
                 s += " data-url='%s'" % self.url
             if self.path:
@@ -97,46 +147,59 @@ class Form:
                 s += " data-pick='%s'" % json.dumps(self.pick)
             if self.readonly:
                 s += " readonly"
+            # if self.helptext:
+            #     s += " data-help='%s'" % json.dumps(unicode(translated))
             s += ">"
+            if self.helptext:
+              translated = _(self.helptext)
+              s += "<a class=help title='%s'>" % _(self.helptext)
+              s += "<img "
+              s += " title='%s'" % unicode(translated)
+              s += " src='/static/images/help.png'>"
+              s += "</a>"
             return s
 
     class Textfield:
         def __init__(self, blueprint):
             self.name = blueprint['name']
+            self.text = self.name
             self.type = "textfield"
             self.readonly = blueprint.get('disabled')
             self.value = ""
 
         def tohtml(self):
             s = ""
-            s += "<label>%s</label>\n" % _(self.name)
+            s += "<label>%s</label>\n" % _(self.text)
             s += "<textarea name='%s'" % self.name
             if self.readonly:
                 s += " readonly"
             s += ">%s</textarea>" % self.value or ""
             return s
 
+    class Row:
+        def __init__(self, recipe, row):
+            self.name = None
+            self.row = str(row)
+            self.label = recipe.get("label", "")
+            self.inputs = []
+            for blueprint in recipe["columns"]:
+                for element in Form.build(blueprint):
+                    element.name = element.name + "_" + self.row
+                    element.nolabel = True
+                    element.size = 5
+                    self.inputs.append(element)
+
+        def tohtml(self):
+            h = "<label>%s [%s]</label> " % (_(self.label), self.row)
+            for element in self.inputs: h += element.tohtml()
+            return h
+
     def __init__(self, slug, recipe):
         self.slug = slug
         self.inputs = []
         for blueprint in recipe:
-            for element in self.build(blueprint):
+            for element in Form.build(blueprint):
                 self.inputs.append(element)
-
-    def build(self, blueprint):
-        if blueprint['type'] == "textfield":
-            return [self.Textfield(blueprint)]
-        elif blueprint['type'] == "annotation":
-            return [self.Input({'type': 'text',
-                                'name': 'marked-pages',
-                                'disabled': True
-                               }),
-                    self.Input({'type': 'hidden', 'name': blueprint['name']}),
-                    self.Button({'name': 'mark-page'}),
-                    self.Button({'name': 'removefabric'})
-                   ]
-        else:
-            return [self.Input(blueprint)]
 
     def tohtml(self):
         h = ""
@@ -145,7 +208,7 @@ class Form:
 
     def validate(self, request):
         for element in self.inputs:
-            if element.name in request:
+            if element.name and element.name in request:
                 if element.type == "checkbox":
                     if request[element.name]: element.checked = True
                 else:

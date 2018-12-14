@@ -39,9 +39,9 @@
 
 <script>
 var data = [
-  % for post in posts:
-  % if post.wkt():
-  { id: "{{!post.id}}", path: "{{!post.path()}}", wkt: {{!post.wkt()}} },
+  % for entry in entries:
+  % if entry.wkt():
+  { id: "{{!entry.id}}", path: "{{!entry.path()}}", wkt: {{!entry.wkt()}} },
   % end
   % end
 ];

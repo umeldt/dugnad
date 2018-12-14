@@ -47,13 +47,13 @@
         <b>{{_('select-page')}}</b>:
         <select id=select-page name=page>
         % for n in range(1, project.source['pages']):
-          <option value={{n}}>{{n + project.source.get('shift', 0)}}</option>
+          <option value={{n}}>{{n + project.source.get('shift', 1)}}</option>
         % end
         </select>
 
         <select id=document-index name=page>
         % for item in project.source.get('index', []):
-          <option value={{item['page'] + project.source.get('indexshift', 0)}} data-auto="{{dump(item)}}">{{item['page'] }}: {{item['text']}}</option>
+          <option value={{item['page'] + project.source.get('indexshift', 1)}} data-auto="{{dump(item)}}">{{item['page'] }}: {{item['text']}}</option>
         % end
         </select>
     </form>

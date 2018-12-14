@@ -23,9 +23,9 @@ from bottle import run, view
 from bottle import static_file, template, SimpleTemplate, FormsDict
 from bottle_utils.i18n import I18NPlugin, i18n_path, i18n_url, lazy_gettext as _
 
-import gi
-gi.require_version('Vips', '8.0')
-from gi.repository import Vips
+#import gi
+#gi.require_version('Vips', '8.0')
+#from gi.repository import Vips
 
 config = yaml.load(open("config.yaml"))
 
@@ -272,7 +272,7 @@ class Entry:
 
     def update(self, db, uid, entry):
         # finished = not data.get('later')
-        query = "DELETE FROM markings WHERE entry = ?"
+        query = "DELETE FROM markings WHERE post = ?"
         db.execute(query, [self.id])
         if 'data' in entry:
             pages = json.loads(entry['data'])
@@ -309,9 +309,8 @@ class Project:
                 entry['user'] = hashlib.sha512(entry['user']).hexdigest()
             if 'data' in entry:
                 entry['data'] = json.loads(entry['data'])
-                del entry['data']
-                if 'data' in entry['data']:
-                    del entry['data']['data']
+                if 'annotation' in entry['data']:
+                  del entry['data']['annotation']
             entries.append(entry)
         return json.dumps(entries)
 

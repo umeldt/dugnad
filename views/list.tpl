@@ -23,14 +23,14 @@
       <th></th>
     </tr>
     </thead>
-    % for post in posts:
+    % for entry in entries:
     <tr>
-      <td>{{post.date}}</td>
-      <td>{{post.updated}}</td>
+      <td>{{entry.date}}</td>
+      <td>{{entry.updated}}</td>
       % for term in project.sort:
-      <td>{{post.get(term)}}</td>
+      <td>{{entry.get(term)}}</td>
       % end
-      <td><a href='{{path("/project/" + project.slug + "/" + post.id)}}'>{{_('edit')}}</a>
+      <td><a href='{{path("/project/" + project.slug + "/" + entry.id)}}'>{{_('edit')}}</a>
     </tr>
     % end
   </table>
